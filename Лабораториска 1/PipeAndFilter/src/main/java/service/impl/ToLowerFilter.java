@@ -2,9 +2,9 @@ package service.impl;
 
 import service.Filter;
 
-public class ToLowerFilter implements Filter {
+public class ToLowerFilter<T> implements Filter<String> {
     @Override
-    public String execute(Object input) {
+    public String execute(String input) {
         String res = input.toString().toLowerCase();
         return res;
     }

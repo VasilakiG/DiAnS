@@ -4,9 +4,9 @@ import service.Filter;
 
 import java.util.Arrays;
 
-public class GradeFilter implements Filter {
+public class GradeFilter<T> implements Filter<String> {
     @Override
-    public String execute(Object input) {
+    public String execute(String input) {
         String[] fields = input.toString().split(",");
         String grade = fields[fields.length-1].toLowerCase();
         if (grade.length()<3) {

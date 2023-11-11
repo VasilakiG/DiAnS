@@ -4,9 +4,9 @@ import service.Filter;
 
 import java.util.Arrays;
 
-public class NoNamesFilter implements Filter {
+public class NoNamesFilter<T> implements Filter<String> {
     @Override
-    public String execute(Object input) {
+    public String execute(String input) {
         String[] fields = input.toString().split(",");
         String[] noNames = Arrays.copyOfRange(fields,2,fields.length);
 

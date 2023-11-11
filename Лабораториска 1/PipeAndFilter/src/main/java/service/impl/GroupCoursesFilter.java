@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GroupCoursesFilter implements Filter {
+public class GroupCoursesFilter<T> implements Filter<String> {
 
     private Map<String, String> courseGroups;
 
@@ -26,7 +26,7 @@ public class GroupCoursesFilter implements Filter {
         courseGroups.put("algorithms and data structures", "programming");
     }
     @Override
-    public String execute(Object input) {
+    public String execute(String input) {
         String res = "";
         String [] fields = input.toString().split(",");
         for (int i = 1; i < fields.length; i++) {
