@@ -23,10 +23,12 @@ public class PipeAndFilterProblem {
         ToLowerFilter toLowerFilter = new ToLowerFilter();
         NoNamesFilter noNamesFilter = new NoNamesFilter();
         GroupCoursesFilter groupCoursesFilter = new GroupCoursesFilter();
-        GradeFilter gradeFilter = new GradeFilter();
+
         pipe1.addFilter(toLowerFilter);
         pipe1.addFilter(noNamesFilter);
         pipe1.addFilter(groupCoursesFilter);
+
+        GradeFilter gradeFilter = new GradeFilter();
 
         pipe2.addFilter(gradeFilter);
         pipe2.addFilter(noNamesFilter);
@@ -36,42 +38,38 @@ public class PipeAndFilterProblem {
 
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
-            //start pipe1
+            // start pipe1
             String line1 = pipe1.runFilters(line);
-            //run pipe1
+            // run pipe1
 
             String[] fields = line1.split(",");
 
-            if (fields[2].length() < 3 && Integer.parseInt(fields[2]) > 5){
-                if (gradesByCourseGroup.containsKey(fields[1])){
+            if (fields[2].length() < 3 && Integer.parseInt(fields[2]) > 5) {
+                if (gradesByCourseGroup.containsKey(fields[1])) {
                     gradesByCourseGroup.put(fields[1], gradesByCourseGroup.get(fields[1]) + Integer.valueOf(fields[2]));
-                }
-                else {
+                } else {
                     gradesByCourseGroup.put(fields[1], Integer.valueOf(fields[2]));
                 }
 
-                if (numberPassing.containsKey(fields[1])){
+                if (numberPassing.containsKey(fields[1])) {
                     numberPassing.put(fields[1], numberPassing.get(fields[1]) + 1);
-                }
-                else {
+                } else {
                     numberPassing.put(fields[1], 1.0);
                 }
 
-                //System.out.println(line1);
+                // System.out.println(line1);
             }
 
             System.out.println(line1);
 
-            //start pipe2
+            // start pipe2
             String line2 = pipe2.runFilters(line);
-            //run pipe2
+            // run pipe2
             System.out.println(line2);
-
-
 
         }
 
-        for (Map.Entry<String, Integer> grade: gradesByCourseGroup.entrySet()){
+        for (Map.Entry<String, Integer> grade : gradesByCourseGroup.entrySet()) {
             System.out.println(grade.getKey() + " " + grade.getValue() / numberPassing.get(grade.getKey()));
         }
 
