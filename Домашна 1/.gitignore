@@ -19,3 +19,14 @@ gradle-app.setting
 .project
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
+
+out
+./out/*
+
+.idea
+./.idea/*
+
+HW1.iml
+Lab1StarterCode.iml
+Lab1v2.iml
+```
