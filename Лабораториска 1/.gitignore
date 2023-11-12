@@ -22,3 +22,8 @@ gradle-app.setting
 
 .idea
 .idea/*
+
+out
+out/*
+
+Lab1-vb.iml
