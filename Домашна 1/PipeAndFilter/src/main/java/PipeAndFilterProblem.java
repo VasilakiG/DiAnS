@@ -26,7 +26,7 @@ public class PipeAndFilterProblem {
         pipe1.addFilter(tourismFilter);
         pipe2.addFilter(historicFilter);
 
-        BufferedWriter writer = new BufferedWriter(new FileWriter("new_database.csv"));
+        BufferedWriter writer = new BufferedWriter(new FileWriter("final_output_pipes.csv"));
 
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
