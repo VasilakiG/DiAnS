@@ -2,6 +2,12 @@
 **/build/
 !src/**/build/
 
+gradle
+build.gradle
+gradlew
+gradlew.bat
+settings.gradle
+
 # Ignore Gradle GUI config
 gradle-app.setting
 
@@ -22,3 +28,6 @@ gradle-app.setting
 
 .idea
 .idea/*
+
+out
+out/*
