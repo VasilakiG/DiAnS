@@ -47,7 +47,7 @@ export default function RootLayout({
 					</Link>
 
 					<Link
-						href="/"
+						href="/map"
 						color='black'
 					>
 						Map
