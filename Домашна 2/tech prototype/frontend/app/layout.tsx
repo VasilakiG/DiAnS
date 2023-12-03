@@ -35,7 +35,9 @@ export default function RootLayout({
 				/>
 
 				<HStack
-					spacing="5vw"
+					paddingTop={"1vh"}
+					spacing="7.5vw"
+					fontSize={'1vw'}
 				>
 					<Link
 						href="/"
@@ -61,6 +63,7 @@ export default function RootLayout({
 
 				<HStack
 					spacing="1vw"
+					paddingRight={"1vw"}
 				>
 					<Button
 						background="#5DB3FF"
