@@ -1,16 +1,20 @@
 import { Button, HStack, Heading, VStack } from "@chakra-ui/react";
+import { ReactElement } from "react";
+import RootLayout from "../components/shared/header-pc";
+import Layout from "@/components/layout/layout";
 
 export default function Home() {
 	return (
     	<>
 			<div
 				style={{
-					backgroundImage: `url('/landingPhoto.png')`,
+					backgroundImage: `url(landingPhoto.png)`,
 					backgroundRepeat: 'no-repeat',
 					width: '100%',
-					height: '90%',
+					height: '90vh',
 					backgroundPosition: 'center',
 					backgroundSize: '100%',
+					padding: '0',
 				}}
 			>
 				<HStack
@@ -68,4 +72,8 @@ export default function Home() {
 			</div>
     	</>
 	);
+};
+
+Home.getLayout = function getLayout(page: ReactElement) {
+	return <Layout>{page}</Layout>;
 };
