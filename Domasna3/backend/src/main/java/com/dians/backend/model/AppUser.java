@@ -1,4 +1,4 @@
-package com.dians.hw3.model;
+package com.dians.backend.model;
 
 public interface AppUser {
     String getUsername();
