@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+</head>
+<style>
+    table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    td, th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+
+    tr:nth-child(even) {
+        background-color: #dddddd;
+    }
+</style>
+<body>
+<h1>Home Page</h1>
+<form method="GET" action="/logout">
+    <button id="logout" type="submit">Logout</button>
+</form>
+
+<form method="GET" action="/home/search">
+    <label for="searchType">Search by type:</label>
+    <input type="text" name="searchType" id="searchType" placeholder="monument, archaeological_site, aircraft, locomotive...">
+    <input type="submit" value="Search">
+</form>
+
+<table>
+    <thead>
+    <tr>
+        <th scope="col">OSM_ID</th>
+        <th scope="col">HISTORIC</th>
+        <th scope="col">TOURISM</th>
+        <th scope="col">WAY</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="landmark : ${landmarks}">
+        <td th:text="${landmark.getOsm_id()}"></td>
+        <td th:text="${landmark.getHistoric()}"></td>
+        <td th:text="${landmark.getTourism()}"></td>
+        <td th:text="${landmark.getWay()}"></td>
+        <td>
+            <th:block>
+                <a th:href="@{'/home/add-review-form/{id}' (id=${landmark.getOsm_id()})}">Add review</a>
+            </th:block>
+            <th:block>
+                <a th:href="@{'/home/reviews/{id}' (id=${landmark.getOsm_id()})}">See all reviews</a>
+            </th:block>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

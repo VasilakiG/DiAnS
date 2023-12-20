@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Landmark edit</title>
+</head>
+<body>
+<form th:action="'/home/admin/edit/'+${landmark.getOsm_id()}" method="POST">
+    <div>
+        <label for="historic">Historic type:</label>
+        <input type="text"
+               id="historic"
+               name="historic"
+               th:value="(${landmark} !=null ? ${landmark.getHistoric()} : '')">
+    </div>
+    <div>
+        <label for="tourism">Tourism type:</label>
+        <input type="text"
+               id="tourism"
+               name="tourism"
+               th:value="(${landmark} !=null ? ${landmark.getTourism()} : '')">
+    </div>
+    <div>
+        <label for="way">Coordinates:</label>
+        <input type="text"
+               id="way"
+               name="way"
+               th:value="(${landmark} !=null ? ${landmark.getWay()} : '')">
+    </div>
+
+    <button type="submit">Submit</button>
+    <a type="button" href="/home/admin">Back</a>
+</form>
+</body>
+</html>
