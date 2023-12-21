@@ -35,4 +35,9 @@ public class LandmarkController {
     public ResponseEntity<List<Landmark>> searchByHistoric(@PathVariable String searchType){
         return new ResponseEntity<>(landmarkService.searchByHistoric(searchType), HttpStatus.OK);
     }
+
+    @GetMapping(value = "tourism/{searchType}")
+    public ResponseEntity<List<Landmark>> searchByTourism(@PathVariable String searchType){
+        return new ResponseEntity<>(landmarkService.searchByTourism(searchType), HttpStatus.OK);
+    }
 }
