@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
 	Drawer,
 	DrawerBody,
@@ -10,22 +10,39 @@ import {
 	Button,
 	Heading,
 	Spacer,
-	VStack,
-	Container} from "@chakra-ui/react";
-import Layout from "@/components/layout/layout";
+	VStack} from "@chakra-ui/react";
 import dynamic from "next/dynamic";
 const Image = dynamic(() => import('next/image'), { ssr: false });
 import { MapContainer, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
+import axios from "axios";
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
 
 export default function DynamicMap({ ...rest }) {
 	
 	const [isOpen, setIsOpen] = useState(false);
-
+	const [selectedCategory, setSelectedCategory] = useState<"museum" | "archeological">();
+	const [mapPoints, setMapPoints] = useState([]);
+	const [visibleMarker, setVisibleMarker] = useState();
+	
+	useEffect(() => {
+		if(!selectedCategory) return;
+		const fetchPoints = async () => {
+			axios.get(`https://api.npms.io/v2/search?q=${selectedCategory}`)
+        .then((response) => {
+			console.log(response);
+			setMapPoints(response.data.results)
+			setVisibleMarker(undefined);
+		});
+		};
+		fetchPoints();
+	}, [selectedCategory]);
 	const onOpen = () => {
 		setIsOpen(true);
 		setIsMuseum1Open(false);
 		setIsDirectionsOpen(false);
+		//fetch('http://localhost:3000/api/museums')
 	};
 
 	const onClose = () => setIsOpen(false);
