@@ -6,4 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface LandmarkRepository extends JpaRepository<Landmark, Long> {
+
+    List<Landmark> searchByHistoric(String historic);
+    List<Landmark> searchByTourism(String tourism);
 }
