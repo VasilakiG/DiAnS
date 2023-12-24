@@ -13,7 +13,7 @@ import {
 	VStack} from "@chakra-ui/react";
 import dynamic from "next/dynamic";
 const Image = dynamic(() => import('next/image'), { ssr: false });
-import { MapContainer, TileLayer } from "react-leaflet";
+import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import axios from "axios";
 
@@ -22,51 +22,74 @@ import axios from "axios";
 export default function DynamicMap({ ...rest }) {
 	
 	const [isOpen, setIsOpen] = useState(false);
-	const [selectedCategory, setSelectedCategory] = useState<"museum" | "archeological">();
-	const [mapPoints, setMapPoints] = useState([]);
-	const [visibleMarker, setVisibleMarker] = useState();
-	
+
+	const [selectedCategory, setSelectedCategory] = useState('');
+	const [selectedAttraction, setSelectedAttraction] = useState<{ name: string, lat: number, lng: number, category: string } | null>(null);
+	//const [attractions, setAttractions] = useState([]);
+	const [markers, setMarkers] = useState([0]);
+
 	useEffect(() => {
-		if(!selectedCategory) return;
-		const fetchPoints = async () => {
-			axios.get(`https://api.npms.io/v2/search?q=${selectedCategory}`)
-        .then((response) => {
-			console.log(response);
-			setMapPoints(response.data.results)
-			setVisibleMarker(undefined);
-		});
-		};
-		fetchPoints();
+		if (selectedCategory) {
+		fetchAttractions(selectedCategory);
+		}
 	}, [selectedCategory]);
-	const onOpen = () => {
+
+	const fetchAttractions = async (category: string) => {
+		try {
+		const response = await axios.get(`/attractions?category=${category}`);
+		//setAttractions(response.data);
+		} catch (error) {
+		console.error('Error fetching attractions:', error);
+		}
+	};
+
+	const [userLocation, setUserLocation] = useState<[number, number]>([0, 0]);
+
+	const fetchUserLocation = () => {
+		navigator.geolocation.getCurrentPosition(
+		(position) => {
+			setUserLocation([position.coords.latitude, position.coords.longitude]);
+		},
+		(error) => {
+			console.error('Error getting user location:', error);
+		}
+		);
+	};
+
+	const attractions = [
+		{ id: 1, name: 'Attraction 1', lat: 3.0000, lng: -1.0000, category: 'Museums'},
+		{ id: 2, name: 'Attraction 2', lat: 0.0000, lng: 1.0000, category: 'Archeological Sites' },
+		// ... test attractions
+	];
+
+	useEffect(() => {
+		fetchUserLocation();
+	}, []);
+
+	const handleMarkerClick = (selectedMarker: number) => {
+		// Remove all markers except the selected one
+		setMarkers([selectedMarker]);
+	};
+	
+	const onOpen = (category: React.SetStateAction<string>) => {
+		setSelectedCategory(category);
 		setIsOpen(true);
-		setIsMuseum1Open(false);
-		setIsDirectionsOpen(false);
+		setIsAttractionOpen(false);
 		//fetch('http://localhost:3000/api/museums')
 	};
 
 	const onClose = () => setIsOpen(false);
 
+	const [isAttractionOpen, setIsAttractionOpen] = useState(false);
 
-	const [isMuseum1Open, setIsMuseum1Open] = useState(false);
-
-	const onMuseum1Open = () => {
-		setIsMuseum1Open(true);
-		setIsOpen(false);
-		setIsDirectionsOpen(false);
+	const onAttractionOpen = (attraction: { name: string, lat: number, lng: number, category: string }) => {
+	setSelectedAttraction(attraction);
+	setIsAttractionOpen(true);
+	setIsOpen(false);
 	};
 
-	const onMuseum1Close = () => setIsMuseum1Open(false);
 
-	const [isDiectionsOpen, setIsDirectionsOpen] = useState(false);
-
-	const onDirectionsOpen = () => {
-		setIsDirectionsOpen(true);
-		setIsMuseum1Open(false);
-		setIsOpen(false);
-	};
-
-	const onDirectionsClose = () => setIsDirectionsOpen(false);
+	const onAttractionClose = () => setIsAttractionOpen(false);
 
 	return (
 		<>
@@ -91,8 +114,9 @@ export default function DynamicMap({ ...rest }) {
 					paddingRight={"2vw"}
 					backgroundColor={"black"}
 					color={"white"}
+					onClick={() => onOpen('Archeological Sites')}
 				>
-					Historical
+					Archeological Sites
 				</Button>
 				<Button
 					borderRadius={"20px"}
@@ -100,7 +124,7 @@ export default function DynamicMap({ ...rest }) {
 					paddingRight={"2vw"}
 					backgroundColor={"black"}
 					color={"white"}
-					onClick={onOpen}
+					onClick={() => onOpen('Museums')}
 				>
 					Museums
 				</Button>
@@ -110,8 +134,9 @@ export default function DynamicMap({ ...rest }) {
 					paddingRight={"2vw"}
 					backgroundColor={"black"}
 					color={"white"}
+					onClick={() => onOpen('Aircraft')}
 				>
-					Nature
+					Aircraft
 				</Button>
 				<Button
 					borderRadius={"20px"}
@@ -119,6 +144,7 @@ export default function DynamicMap({ ...rest }) {
 					paddingRight={"2vw"}
 					backgroundColor={"black"}
 					color={"white"}
+					onClick={() => onOpen('Religious')}
 				>
 					Religious
 				</Button>
@@ -143,87 +169,34 @@ export default function DynamicMap({ ...rest }) {
 					paddingLeft={"3vw"}
 					fontSize={"2vw"}
 				>
-					Museums near you:
+					{`${selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)} near you:`}
 				</DrawerHeader>
 
 				<DrawerBody>
-					<Button
-						padding={"2vw"}
-						background={"transparent"}
-						color={"black"}
-						_hover={{ background: "transparent" }}
-						height={"auto"}
-						width={"100%"}
-						onClick={onMuseum1Open}
-					>
-						<Image
-							src={'/museum1.png'}
-							alt={'museum1'}
-							width={200}
-							height={200}
-						/>
-						<Spacer />
-						<Heading
-							fontSize={"1.3vw"}
-							textAlign={"center"}
-							fontWeight={"400"}
-							paddingRight={"3vw"}
-						>
-							Archaeological<br/>Museum of<br/>Macedonia
-						</Heading>
-					</Button>
 
-					<Button
-						padding={"2vw"}
-						background={"transparent"}
-						color={"black"}
-						_hover={{ background: "transparent" }}
-						height={"auto"}
-						width={"100%"}
-						onClick={onMuseum1Open}
-					>
-						<Image
-							src={'/museum2.png'}
-							alt={'museum2'}
-							width={200}
-							height={200}
-						/>
-						<Spacer />
-						<Heading
-							fontSize={"1.3vw"}
-							textAlign={"center"}
-							fontWeight={"400"}
-							paddingRight={"3vw"}
+					<ul>
+					{attractions.map((attraction) => (
+						<Button
+							padding={"2vw"}
+							background={"transparent"}
+							color={"black"}
+							_hover={{ background: "transparent" }}
+							height={"auto"}
+							width={"100%"}
+							key={attraction.id as number}
+							onClick={() => onAttractionOpen(attraction)}
 						>
-							Mother Theresa<br/>Memorial House
-						</Heading>
-					</Button>
-
-					<Button
-						padding={"2vw"}
-						background={"transparent"}
-						color={"black"}
-						_hover={{ background: "transparent" }}
-						height={"auto"}
-						width={"100%"}
-						onClick={onMuseum1Open}
-					>
-						<Image
-							src={'/museum3.png'}
-							alt={'museum3'}
-							width={200}
-							height={200}
-						/>
-						<Spacer />
-						<Heading
-							fontSize={"1.3vw"}
-							textAlign={"center"}
-							fontWeight={"400"}
-							paddingRight={"3vw"}
-						>
-							Old Railway<br/>Skopje City<br/>Museum
-						</Heading>
-					</Button>
+							<Heading
+								fontSize={"1.3vw"}
+								textAlign={"center"}
+								fontWeight={"400"}
+								paddingRight={"3vw"}
+							>
+								{attraction.name as string}
+							</Heading>
+						</Button>
+					))}
+					</ul>
 					
 				</DrawerBody>
 
@@ -235,9 +208,9 @@ export default function DynamicMap({ ...rest }) {
 			<Drawer
 				variant="alwaysOpen"
 				{...rest}
-				isOpen={isMuseum1Open}
+				isOpen={isAttractionOpen}
 				placement="left"
-				onClose={onMuseum1Close}
+				onClose={onAttractionClose}
 				trapFocus={false}
 				closeOnOverlayClick={false}
 				blockScrollOnMount={false}
@@ -256,18 +229,12 @@ export default function DynamicMap({ ...rest }) {
 						justifyContent={"center"}
 						width={"auto"}
 					>
-						<Image
-							src={'/museum1.png'}
-							alt={'museum1'}
-							width={429}
-							height={284}
-							/>
 						<Heading
 							fontSize={"1.3vw"}
 							textAlign={"center"}
 							fontWeight={"400"}
-							>
-							Archaeological Museum of<br/>Macedonia
+						>
+							{selectedAttraction && selectedAttraction.name}
 						</Heading>
 					</VStack>
 
@@ -295,7 +262,11 @@ export default function DynamicMap({ ...rest }) {
 								textAlign={"center"}
 								fontWeight={"400"}
 							>
-								Location: Skopje
+								{selectedAttraction && (
+									<>
+										Lng: {selectedAttraction.lng} Lat: {selectedAttraction.lat}
+									</>
+								)}
 							</Heading>
 						</HStack>
 
@@ -314,7 +285,7 @@ export default function DynamicMap({ ...rest }) {
 								textAlign={"center"}
 								fontWeight={"400"}
 								>
-								Type: Museum
+								Type: {selectedAttraction && selectedAttraction.category}
 							</Heading> 
 						</HStack>
 					</VStack>
@@ -333,7 +304,7 @@ export default function DynamicMap({ ...rest }) {
 						_hover={{ background: "black" }}
 						height={"2vh"}
 						width={"10vw"}
-						onClick={onDirectionsOpen}
+						//onClick={}
 					>
 						Get Directions
 					</Button>
@@ -345,110 +316,6 @@ export default function DynamicMap({ ...rest }) {
 				</DrawerContent>
 			</Drawer>
 
-			<Drawer
-				variant="alwaysOpen"
-				{...rest}
-				isOpen={isDiectionsOpen}
-				placement="left"
-				onClose={onDirectionsClose}
-				trapFocus={false}
-				closeOnOverlayClick={false}
-				blockScrollOnMount={false}
-				size={'lg'}
-			>
-				{/* <DrawerOverlay /> */}
-				<DrawerContent>
-				<DrawerCloseButton />
-
-				<DrawerBody>
-					<VStack
-						paddingTop={"10vh"}
-						paddingBottom={"3vh"}
-						spacing={"3vh"}
-						alignItems={"center"}
-						justifyContent={"center"}
-						width={"auto"}
-					>
-						<Image
-							src={'/museum1.png'}
-							alt={'museum1'}
-							width={429}
-							height={284}
-							/>
-						<Heading
-							fontSize={"1.3vw"}
-							textAlign={"center"}
-							fontWeight={"400"}
-							>
-							Archaeological Museum of<br/>Macedonia
-						</Heading>
-					</VStack>
-
-					<VStack
-						paddingTop={"6vh"}
-						paddingBottom={"3vh"}
-						paddingLeft={"5vw"}
-						spacing={"3vh"}
-						alignItems={"left"}
-						justifyContent={"left"}
-						width={"auto"}
-					>
-						<HStack
-							width={"auto"}
-							spacing={"1vw"}
-						>
-							<Image
-								src={'/location.png'}
-								alt={'location pin'}
-								width={30}
-								height={30}
-							/>
-							<Heading
-								fontSize={"1.3vw"}
-								textAlign={"center"}
-								fontWeight={"400"}
-							>
-								Location: Skopje
-							</Heading>
-						</HStack>
-
-						<HStack
-							width={"auto"}
-							spacing={"1vw"}
-						>
-							<Image
-								src={'/museumLogo.png'}
-								alt={'location pin'}
-								width={30}
-								height={30}
-							/>
-							<Heading
-								fontSize={"1.3vw"}
-								textAlign={"center"}
-								fontWeight={"400"}
-								>
-								Type: Museum
-							</Heading> 
-						</HStack>
-					</VStack>
-
-					<Heading
-						fontSize={"1.3vw"}
-						textAlign={"center"}
-						fontWeight={"400"}
-						marginTop={"3svh"}
-						paddingRight={"3vw"}
-					>
-						Follow the line, estimated distance 2km.
-					</Heading>
-
-					
-				</DrawerBody>
-
-				<DrawerFooter>
-				</DrawerFooter>
-				</DrawerContent>
-			</Drawer>
 			<MapContainer
 				style={{
 					position: 'relative',
@@ -466,6 +333,11 @@ export default function DynamicMap({ ...rest }) {
 					url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
 				/>
 
+				{/* {markers.map((marker) => (
+					<Marker key={marker.id} position={[marker.lat, marker.lng]}>
+						<Popup>{marker.name}</Popup>
+					</Marker>
+				))} */}
 			</MapContainer>
 		</>
 	);
