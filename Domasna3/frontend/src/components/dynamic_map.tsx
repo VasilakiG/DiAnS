@@ -304,7 +304,7 @@ export default function DynamicMap({ ...rest }) {
 						_hover={{ background: "black" }}
 						height={"2vh"}
 						width={"10vw"}
-						//onClick={}
+						onClick={() => fetchUserLocation()}
 					>
 						Get Directions
 					</Button>
