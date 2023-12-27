@@ -97,7 +97,7 @@ export default function DynamicMap({ ...rest }) {
 				background={"whiteAlpha.800"}
 				paddingTop={"2vh"}
 				paddingBottom={"2vh"}
-				borderRadius={"15px"}
+				borderRadius={"120px"}
 				marginTop={"3vh"}
 				marginLeft={"10vw"}
 				zIndex={"100"}
@@ -106,8 +106,11 @@ export default function DynamicMap({ ...rest }) {
 					borderRadius={"20px"}
 					paddingLeft={"2vw"}
 					paddingRight={"2vw"}
+					paddingTop={"2vh"}
+					paddingBottom={"2vh"}
 					backgroundColor={"black"}
 					color={"white"}
+					fontSize={"x-large"}
 					onClick={() => onOpen('Archeological Sites')}
 				>
 					Archeological Sites
@@ -116,8 +119,11 @@ export default function DynamicMap({ ...rest }) {
 					borderRadius={"20px"}
 					paddingLeft={"2vw"}
 					paddingRight={"2vw"}
+					paddingTop={"2vh"}
+					paddingBottom={"2vh"}
 					backgroundColor={"black"}
 					color={"white"}
+					fontSize={"x-large"}
 					onClick={() => onOpen('Museums')}
 				>
 					Museums
@@ -126,9 +132,12 @@ export default function DynamicMap({ ...rest }) {
 					borderRadius={"20px"}
 					paddingLeft={"2vw"}
 					paddingRight={"2vw"}
+					paddingTop={"2vh"}
+					paddingBottom={"2vh"}
 					backgroundColor={"black"}
 					color={"white"}
 					onClick={() => onOpen('Aircraft')}
+					fontSize={"x-large"}
 				>
 					Aircraft
 				</Button>
@@ -136,9 +145,12 @@ export default function DynamicMap({ ...rest }) {
 					borderRadius={"20px"}
 					paddingLeft={"2vw"}
 					paddingRight={"2vw"}
+					paddingTop={"2vh"}
+					paddingBottom={"2vh"}
 					backgroundColor={"black"}
 					color={"white"}
 					onClick={() => onOpen('Religious')}
+					fontSize={"x-large"}
 				>
 					Religious
 				</Button>
@@ -300,7 +312,7 @@ export default function DynamicMap({ ...rest }) {
 						_hover={{ background: "black" }}
 						height={"2vh"}
 						width={"10vw"}
-						//onClick={}
+						onClick={() => fetchUserLocation()}
 					>
 						Get Directions
 					</Button>
