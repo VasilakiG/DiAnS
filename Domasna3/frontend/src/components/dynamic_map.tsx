@@ -9,15 +9,15 @@ import {
 	HStack,
 	Button,
 	Heading,
-	Spacer,
 	VStack} from "@chakra-ui/react";
 import dynamic from "next/dynamic";
 const Image = dynamic(() => import('next/image'), { ssr: false });
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import attractions from "@/components/shared/attractions/attractions";
 import "leaflet/dist/leaflet.css";
 import axios from "axios";
+import { DivIcon, Icon } from "leaflet";
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
 
 export default function DynamicMap({ ...rest }) {
 	
@@ -55,12 +55,6 @@ export default function DynamicMap({ ...rest }) {
 		}
 		);
 	};
-
-	const attractions = [
-		{ id: 1, name: 'Attraction 1', lat: 3.0000, lng: -1.0000, category: 'Museums'},
-		{ id: 2, name: 'Attraction 2', lat: 0.0000, lng: 1.0000, category: 'Archeological Sites' },
-		// ... test attractions
-	];
 
 	useEffect(() => {
 		fetchUserLocation();
@@ -185,31 +179,33 @@ export default function DynamicMap({ ...rest }) {
 				</DrawerHeader>
 
 				<DrawerBody>
-
 					<ul>
-					{attractions.map((attraction) => (
-						<Button
-							padding={"2vw"}
-							background={"transparent"}
-							color={"black"}
-							_hover={{ background: "transparent" }}
-							height={"auto"}
-							width={"100%"}
-							key={attraction.id as number}
-							onClick={() => onAttractionOpen(attraction)}
-						>
-							<Heading
-								fontSize={"1.3vw"}
-								textAlign={"center"}
-								fontWeight={"400"}
-								paddingRight={"3vw"}
-							>
-								{attraction.name as string}
-							</Heading>
-						</Button>
-					))}
+						{attractions
+							.filter((attraction) => attraction.category === selectedCategory)
+							.map((attraction) => (
+								<Button
+									padding={"2vw"}
+									background={"transparent"}
+									color={"black"}
+									_hover={{ background: "transparent" }}
+									height={"auto"}
+									width={"100%"}
+									justifyContent={"left"}
+									key={attraction.id as number}
+									onClick={() => onAttractionOpen(attraction)}
+								>
+									<Heading
+										fontSize={"1.3vw"}
+										textAlign={"center"}
+										fontWeight={"400"}
+										paddingRight={"3vw"}
+									>
+										{attraction.name as string}
+									</Heading>
+								</Button>
+							))}
 					</ul>
-					
+
 				</DrawerBody>
 
 				<DrawerFooter>
@@ -345,11 +341,28 @@ export default function DynamicMap({ ...rest }) {
 					url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
 				/>
 
-				{/* {markers.map((marker) => (
-					<Marker key={marker.id} position={[marker.lat, marker.lng]}>
-						<Popup>{marker.name}</Popup>
+				{attractions
+					.filter((attraction) => attraction.category === selectedCategory)
+					.map((attraction) => (
+					<Marker
+						icon={
+							new DivIcon({
+							className: 'custom-marker',
+							html: `<img src="/locationPin.png" alt="marker" />`,
+							iconSize: [30, 30],
+							iconAnchor: [15, 30],
+							popupAnchor: [0, -30],
+							})
+						}
+						key={attraction.id}
+						position={[attraction.lat, attraction.lng]}
+						eventHandlers={{
+							click: () => onAttractionOpen(attraction),
+						}}
+					>
+						<Popup>{attraction.name}</Popup>
 					</Marker>
-				))} */}
+				))}
 			</MapContainer>
 		</>
 	);
