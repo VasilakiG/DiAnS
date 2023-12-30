@@ -19,4 +19,14 @@ public class Landmark {
     private String historic;
     private String tourism;
     private String way;
+    @OneToMany(mappedBy = "landmark", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Review> reviewList;
+
+    public Landmark(String historic, String tourism, String way){
+        this.osm_id =(long) (Math.random()*1000);
+        this.historic=historic;
+        this.tourism=tourism;
+        this.way=way;
+        this.reviewList = new ArrayList<>();
+    }
 }
