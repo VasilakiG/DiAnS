@@ -38,6 +38,16 @@ public class HomeController {
         return "home";
     }
 
+    @GetMapping("/search2")
+    public String getFilteredLandmarks2(@RequestParam String searchType2, Model model){
+        if(!searchType2.isEmpty()){
+            model.addAttribute("landmarks",landmarkService.searchByTourism(searchType2));
+        }else{
+            model.addAttribute("landmarks",landmarkService.findAll());
+        }
+        return "home";
+    }
+
     @GetMapping("/add-review-form/{id}")
     public String getAddReviewForm(@PathVariable Long id, Model model){
         model.addAttribute("landmark", landmarkService.findById(id).get());
